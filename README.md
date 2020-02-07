@@ -1,2 +1,2 @@
 # My-News-App
-A news app that display news from news api.
+A news app that displays news from news api.
