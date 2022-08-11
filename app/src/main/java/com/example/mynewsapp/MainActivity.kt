@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,16 +23,14 @@ import com.example.mynewsapp.databinding.ActivityMainBinding
 import com.example.mynewsapp.databinding.ErrorBinding
 import com.example.mynewsapp.model.Article
 import com.example.mynewsapp.model.News
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.core.util.Pair
 
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding1: ActivityMainBinding
-//    private lateinit var binding2: ErrorBinding
+    private lateinit var binding2: ErrorBinding
     val API_KEY = "7bc44e829be14a1dbf068ac684791c57"
     private var adapter: Adapter? = null
     private var articles: ArrayList<Article> = ArrayList()
@@ -44,19 +43,10 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         val view1:View = binding1.root
         setContentView(view1)
 
-//        binding2 = ErrorBinding.inflate(layoutInflater)
-//        val view2:View = binding2.root
-//        setContentView(view2)
-
+        binding2 = ErrorBinding.inflate(layoutInflater)
         binding1.topheadelines
         val recyclerView = binding1.recyclerView
         val swipeRefreshLayout = binding1.swipeRefreshLayout
-
-//        binding2.errorLayout
-//        binding2.btnRetry
-//        binding2.errorImage
-//        binding2.errorMessage
-//        binding2.errorTitle
 
         swipeRefreshLayout.setOnRefreshListener{
             onRefresh()
@@ -88,20 +78,9 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         )
     }
 
-//    private fun showErrorMessage(imageView: Int, title: String, message: String) {
-//        if (binding2.errorLayout.getVisibility() == View.GONE) {
-//            binding2.errorLayout.setVisibility(View.VISIBLE)
-//        }
-//        binding2.errorImage.setImageResource(imageView)
-//        binding2.errorTitle.setText(title)
-//        binding2.errorMessage.setText(message)
-//        binding2.btnRetry.setOnClickListener(View.OnClickListener { onLoadingSwipeRefresh("") })
-//    }
-
-
     private fun LoadJson(keyword: String) {
-//        binding2.errorLayout.setVisibility(View.GONE)
-//        binding1.swipeRefreshLayout.setRefreshing(true)
+        binding2.errorLayout.setVisibility(View.GONE)
+        binding1.swipeRefreshLayout.setRefreshing(true)
         val retrofitClient = RetrofitClient()
         val apiInterface: RetrofitInterface =
             retrofitClient.getInstance()!!.create(RetrofitInterface::class.java)
@@ -135,28 +114,28 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
                         500 -> "500 server broken"
                         else -> "unknown error"
                     }
-//                    showErrorMessage(
-//                        R.drawable.no_result,
-//                        "No Result",
-//                        """
-//                        Please Try Again!
-//                        $errorCode
-//                        """.trimIndent()
-//                    )
+                    showErrorMessage(
+                        R.drawable.no_result,
+                        "No Result",
+                        """
+                        Please Try Again!
+                        $errorCode
+                        """.trimIndent()
+                    )
                 }
             }
 
             override fun onFailure(call: Call<News>, t: Throwable) {
                 binding1.topheadelines.visibility = View.INVISIBLE
                 binding1.swipeRefreshLayout.isRefreshing = false
-//                showErrorMessage(
-//                    R.drawable.no_result,
-//                    "Oops..",
-//                    """
-//                    Network failure, Please Try Again
-//                    $t
-//                    """.trimIndent()
-//                )
+                showErrorMessage(
+                    R.drawable.no_result,
+                    "Oops..",
+                    """
+                    Network failure, Please Try Again
+                    $t
+                    """.trimIndent()
+                )
             }
         })
     }
@@ -223,6 +202,17 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         }
         adapter!!.setOnItemClickListener(obj)
     }
+
+    private fun showErrorMessage(imageView: Int, title: String, message: String) {
+        if (binding2.errorLayout.getVisibility() == View.GONE) {
+            binding2.errorLayout.setVisibility(View.VISIBLE)
+        }
+        binding2.errorImage.setImageResource(imageView)
+        binding2.errorTitle.setText(title)
+        binding2.errorMessage.setText(message)
+        binding2.btnRetry.setOnClickListener(View.OnClickListener { onLoadingSwipeRefresh("") })
+    }
+
 }
 
 
